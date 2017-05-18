@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="ServicioWeb-XYZ">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <dependent-module archiveName="ProyectoXYZ.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ProyectoXYZ/ProyectoXYZ">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="ServicioWeb-XYZ"/>
+        <property name="java-output-path" value="/ServicioWeb-XYZ/build/classes"/>
+    </wb-module>
+</project-modules>

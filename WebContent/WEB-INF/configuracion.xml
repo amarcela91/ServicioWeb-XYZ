@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
+
+	<!-- Datasource con los datos de conexion a la base de datos -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/xyz"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="1edison2"></property>
+	</bean>
+	
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	    <property name="dataSource" ref="dataSource"></property>
+	    <property name="mappingResources">
+	        <list>
+                <value>co/edu/udea/iw/dao/mapping/Cliente.hbm.xml</value>
+                <value>co/edu/udea/iw/dao/mapping/Encuesta.hbm.xml</value>
+                <value>co/edu/udea/iw/dao/mapping/Peticion.hbm.xml</value>
+                <value>co/edu/udea/iw/dao/mapping/Rol.hbm.xml</value>
+                <value>co/edu/udea/iw/dao/mapping/Usuario.hbm.xml</value>                
+            </list>
+            
+	    </property>
+	    <property name="hibernateProperties">
+	        <props>
+	            <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+	            <prop key="hibernate.show_sql">true</prop>
+				<prop key="javax.persistence.validation.mode">none</prop>
+				<prop key="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</prop>
+				
+	        </props>
+	    </property>
+	</bean>
+	
+	<!-- Transacciones de Spring -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	    <property name="dataSource" ref="dataSource"></property>
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- Vinculo entre los DAO en la configuracion de Spring -->
+	<bean id="clienteDao" class="co.edu.udea.iw.dao.hibernate.ClienteDAOHibernate">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="usuarioDao" class="co.edu.udea.iw.dao.hibernate.UsuarioDAOHibernate">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="peticionDao" class="co.edu.udea.iw.dao.hibernate.PeticionDAOHibernate">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="encuestaDao" class="co.edu.udea.iw.dao.hibernate.EncuestaDAOHibernate">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+		
+	<bean id="rolDao" class="co.edu.udea.iw.dao.hibernate.RolDAOHibernate">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	
+	<!-- Servicios de Spring -->	
+	<bean id="clienteImpl" class="co.edu.udea.iw.impl.ClienteImpl">
+	    <property name="clienteDAO" ref="clienteDao"></property>	    
+	</bean>
+	
+	<bean id="usuarioImpl" class="co.edu.udea.iw.impl.UsuarioImpl">
+	    <property name="usuarioDAO" ref="usuarioDao"></property>
+	    <property name="rolDAO" ref="rolDao"></property>
+	</bean>
+	
+	<bean id="peticionImpl" class="co.edu.udea.iw.impl.PeticionImpl">
+	    <property name="peticionDAO" ref="peticionDao"></property>
+	    <property name="clienteDAO" ref="clienteDao"></property>
+	</bean>
+	
+	<bean id="encuestaImpl" class="co.edu.udea.iw.impl.EncuestaImpl">
+	    <property name="encuestaDAO" ref="encuestaDao"></property>
+	</bean>
+	
+		
+	<bean id="rolImpl" class="co.edu.udea.iw.impl.RolImpl">
+	    <property name="rolDAO" ref="rolDao"></property>
+	</bean>
+	
+		
+	<context:component-scan base-package="co.edu.udea.iw.rest"/>
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>
